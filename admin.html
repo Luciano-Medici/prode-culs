@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Panel | PRODE CULS</title>
+<link rel="icon" href="img/sym.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  body{background:var(--papel)}
+  .adm{max-width:1040px;margin:0 auto;padding:0 16px 60px}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0;border-bottom:2px solid var(--negro)}
+  .top .logo{width:96px;color:var(--negro)}
+  .top .t{display:flex;align-items:center;gap:12px;font-family:var(--display);font-variation-settings:"wdth" 86;font-weight:650;font-size:22px;letter-spacing:-.03em}
+  .top .who{font-size:13px;color:var(--tinta-suave);display:flex;gap:10px;align-items:center}
+  .atabs{display:flex;gap:4px;flex-wrap:wrap;margin:16px 0}
+  .atabs button{border:1px solid var(--negro);background:transparent;padding:9px 14px;font-size:14px}
+  .atabs button[aria-pressed="true"]{background:var(--negro);color:var(--blanco)}
+  h2.h{font-family:var(--display);font-variation-settings:"wdth" 86;font-weight:650;font-size:28px;letter-spacing:-.04em;margin:22px 0 8px;line-height:1}
+  .muted{color:var(--tinta-suave);font-size:13.5px;line-height:1.5}
+  .card{background:var(--blanco);padding:14px 16px;margin-top:10px}
+  .jh{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .jh b{font-family:var(--display);font-variation-settings:"wdth" 86;font-weight:650;font-size:21px;letter-spacing:-.03em}
+  .pr{display:grid;grid-template-columns:minmax(120px,1.2fr) auto auto auto auto;gap:8px;align-items:center;padding:10px 0;border-top:1px solid var(--linea)}
+  .pr .eq{font-size:14px;line-height:1.3}
+  .pr .eq small{display:block;color:var(--tinta-suave);font-size:12px}
+  .gl{display:flex;align-items:center;gap:5px}
+  .gl input{width:52px;font:inherit;font-size:18px;text-align:center;padding:7px 4px;border:0;border-bottom:2px solid var(--negro);background:var(--papel)}
+  select,.inp{font:inherit;font-size:14px;padding:8px;border:0;border-bottom:2px solid var(--negro);background:var(--papel);color:var(--negro)}
+  .btn{border:0;background:var(--negro);color:var(--blanco);padding:9px 12px;font-size:13px}
+  .btn.v{background:var(--verde);color:var(--negro)}
+  .btn.r{background:var(--rojo);color:var(--negro)}
+  .btn.ghost{background:transparent;color:var(--negro);border:1px solid var(--negro)}
+  .btn:disabled{opacity:.45}
+  .st{font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+  .st.ok{color:#5d6e2c}.st.pend{color:var(--tinta-suave)}
+  .msg{font-size:13px;min-height:18px;margin-top:6px}
+  .msg.e{color:var(--rojo)}
+  .bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}
+  table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums;background:var(--blanco)}
+  th,td{text-align:left;padding:8px 8px;border-bottom:1px solid var(--linea);white-space:nowrap}
+  th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--tinta-suave);font-weight:600;background:var(--papel)}
+  td.n{text-align:right;font-weight:700}
+  tr.tt td:first-child{border-left:3px solid var(--verde)}
+  tr.cut td{border-bottom:2px solid var(--negro)}
+  .scroll{overflow-x:auto}
+  .winner{background:var(--verde);padding:14px 16px;margin-top:10px}
+  .winner b{font-family:var(--display);font-variation-settings:"wdth" 86;font-weight:700;font-size:28px;letter-spacing:-.03em;display:block}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px;margin-top:10px}
+  .kpis div{background:var(--negro);color:var(--blanco);padding:12px;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+  .kpis b{display:block;font-family:var(--display);font-variation-settings:"wdth" 86;font-weight:700;font-size:30px;letter-spacing:-.03em;text-transform:none}
+  .login{max-width:360px;margin:60px auto;display:grid;gap:12px}
+  .login .field input{font-size:16px}
+  .alert{background:var(--rojo);color:var(--negro);padding:10px 14px;font-size:13.5px;margin-top:12px}
+  @media (max-width:640px){.pr{grid-template-columns:1fr 1fr;}.pr .eq{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<div class="adm" id="adm"><p class="muted" style="padding:30px 0">Cargando…</p></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

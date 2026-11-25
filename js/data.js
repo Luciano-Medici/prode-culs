@@ -71,7 +71,7 @@
       let pts = 0, jugadas = 0;
       const jornadas = jornada ? [jornada] : C.JORNADAS.map(j => j.n);
       jornadas.forEach(n => { const p = puntosJornada(c.pronos, resultados, n); if (p != null) { pts += p; jugadas++; } });
-      return { nombre: nombrePublico(c.nombre, c.apellido), dni: c.dni, pts, jugadas, aciertos: aciertosPreguntas(c.resp), enviada: c.enviada, propia: !c.ejemplo };
+      return { id: c.ejemplo ? null : "demo-" + c.dni, nombre: nombrePublico(c.nombre, c.apellido), dni: c.dni, pts, jugadas, aciertos: aciertosPreguntas(c.resp), enviada: c.enviada, propia: !c.ejemplo };
     });
     // desempate: más puntos, más aciertos en preguntas, cartilla enviada antes
     filas.sort((a, b) => b.pts - a.pts || b.aciertos - a.aciertos || a.enviada - b.enviada);
@@ -80,6 +80,36 @@
   }
 
   const demora = (v) => new Promise(r => setTimeout(() => r(v), 250));
+
+  /* ---------- MODO SUPABASE ---------- */
+  if (C.SUPABASE_URL) {
+    const sb = window.supabase.createClient(C.SUPABASE_URL, C.SUPABASE_ANON_KEY, { auth: { persistSession: false } });
+    const cache = {};
+    async function rpc(fn, args, cacheSeg) {
+      const k = fn + JSON.stringify(args || {});
+      if (cacheSeg && cache[k] && Date.now() - cache[k].t < cacheSeg * 1000) return cache[k].v;
+      const { data, error } = await sb.rpc(fn, args || {});
+      if (error) throw error;
+      if (cacheSeg) cache[k] = { t: Date.now(), v: data };
+      return data;
+    }
+    window.Datos = {
+      modo: "supabase",
+      PARTIDOS, puntosPartido, puntosJornada, nombrePublico,
+      async enviarCartilla(c) {
+        try { return await rpc("enviar_cartilla", { p: c }); }
+        catch (e) { return { ok: false, error: "red" }; }
+      },
+      resultados: () => rpc("resultados", {}, 30),
+      ranking: (jornada) => rpc("ranking", { p_jornada: jornada || null }, 30),
+      async buscar(dni, mail) {
+        try { return await rpc("buscar_cartilla", { p_dni: dni, p_mail: mail }); }
+        catch (e) { return { ok: false, error: "red" }; }
+      },
+      borrarDemo() {}
+    };
+    return;
+  }
 
   window.Datos = {
     modo: C.SUPABASE_URL ? "supabase" : "demo",
@@ -91,14 +121,13 @@
       if (lista.some(x => x.dni === c.dni) || EJEMPLO.some(x => x.dni === c.dni)) return demora({ ok: false, error: "dni" });
       lista.push({ ...c, enviada: Date.now() });
       guardar(lista);
-      return demora({ ok: true });
+      return demora({ ok: true, id: "demo-" + c.dni });
     },
     async resultados() { return demora({ ...RESULTADOS_DEMO }); },
     async ranking(jornada) { return demora(ranking(todas(), RESULTADOS_DEMO, jornada || null)); },
     async buscar(dni, mail) {
       const c = todas().find(x => x.dni === dni);
-      if (!c) return demora({ ok: false, error: "no-existe" });
-      if (!c.ejemplo && (c.mail || "").toLowerCase() !== (mail || "").toLowerCase()) return demora({ ok: false, error: "mail" });
+      if (!c || (!c.ejemplo && (c.mail || "").toLowerCase() !== (mail || "").toLowerCase())) return demora({ ok: false, error: "no-encontrada" });
       const gen = ranking(todas(), RESULTADOS_DEMO, null);
       return demora({ ok: true, cartilla: c, posicion: gen.find(f => f.dni === dni), total: gen.length });
     },

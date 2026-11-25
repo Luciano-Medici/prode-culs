@@ -5,11 +5,11 @@
    ========================================================= */
 
 window.CONFIG = {
-  // Cuando se conecte la base de datos se completan estas dos líneas.
-  // Mientras estén vacías, la web funciona en MODO DEMO (datos guardados
-  // solo en el navegador y participantes de ejemplo en las tablas).
-  SUPABASE_URL: "",
-  SUPABASE_ANON_KEY: "",
+  // Conexión a Supabase. La clave "publishable" es pública: puede ir acá.
+  // (Nunca pegar acá la clave "secret" / "service_role".)
+  // Si se dejan vacías, la web vuelve al MODO DEMO.
+  SUPABASE_URL: "https://wdhtvaybbiawzvpjgbap.supabase.co",
+  SUPABASE_ANON_KEY: "sb_publishable_WEv3LMJcMp6Ejqp3x7i7zw_PxU4FyLg",
 
   INSTAGRAM: "culshockey",
   WEB: "https://culshockey.com.ar",

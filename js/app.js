@@ -172,6 +172,7 @@
     if (T.jornada == null || !jugadas.includes(T.jornada)) T.jornada = jugadas[jugadas.length - 1] || null;
     const rk = T.tab === "general" ? await D.ranking(null) : (T.jornada ? await D.ranking(T.jornada) : []);
     const TOP = T.tab === "general" ? C.TOP_SPONSOREO : C.TOP_SORTEO_DIA;
+    rk.forEach(r => { r.propia = !!(st.miId && r.id === st.miId); });
     const visibles = rk.slice(0, 30); const yo = rk.find(r => r.propia);
     const fila = r => `<div class="r ${r.pos <= TOP ? "top" : ""} ${r.propia ? "me" : ""}"><span class="pos">${r.pos}</span><span class="nm">${esc(r.nombre)}${r.propia ? " (vos)" : ""}</span><span class="pt">${r.pts}</span></div>`;
     let body;
@@ -255,7 +256,10 @@
       if (st.enviada && S[st.i].id === "registro") st.i = idx("final");
       const s = S[st.i];
       html = s.id === "portada" ? vPortada() : s.id === "reglas" ? vReglas() : s.k === "j" ? vJornada(s.j) : s.k === "h" ? vHistoria(s.h) : s.id === "registro" ? vRegistro() : vFinal();
-    } else if (r === "tablas") html = await vTablas();
+    } else if (r === "tablas") {
+      try { html = await vTablas(); }
+      catch (e) { html = `<div class="thead">${boxes(["Las", "tablas/"], "inv")}</div><div class="empty-s">No pudimos cargar las tablas.<br><button class="link" type="button" data-retry>Probar de nuevo</button></div>`; }
+    }
     else html = vMi();
     v.innerHTML = html;
     v.querySelectorAll("[data-trama]").forEach(trama);
@@ -289,6 +293,7 @@
   document.addEventListener("click", e => {
     const t = e.target.closest("button"); if (!t) return;
     if (t.hasAttribute("data-home")) { st.i = 0; location.hash = "#/"; return; }
+    if (t.hasAttribute("data-retry")) { render(); return; }
     if (t.dataset.route) { location.hash = "#/" + t.dataset.route; return; }
     if (t.dataset.go != null) { go(+t.dataset.go); return; }
     if (t.id === "prev") { go(st.i - 1); return; }
@@ -320,7 +325,7 @@
       M.dni = limpiarDni($("#m-dni").value); M.mail = $("#m-mail").value.trim(); M.err = ""; M.out = null;
       if (!/^\d{7,8}$/.test(M.dni)) { M.err = "Revisá el DNI: son 7 u 8 números, sin puntos."; render(true); return; }
       const r = await D.buscar(M.dni, M.mail);
-      if (!r.ok) M.err = r.error === "mail" ? "El mail no coincide con el de esa cartilla." : "No encontramos una cartilla con ese DNI.";
+      if (!r.ok) M.err = r.error === "red" ? "No pudimos conectarnos. Revisá tu conexión y probá de nuevo." : "No encontramos una cartilla con ese DNI y ese mail.";
       else M.out = { ...r, res: await D.resultados() };
       render(true); return;
     }
@@ -341,10 +346,11 @@
     const r = await D.enviarCartilla({ nombre: f.nombre.trim(), apellido: f.apellido.trim(), dni, mail: f.mail.trim().toLowerCase(), ig, sigo: f.sigo, acepto: f.acepto, origen: st.origen || "directo", pronos, resp: { ...st.a } });
     if (!r.ok) {
       btn.disabled = false; btn.firstChild.textContent = "Enviar mi cartilla ";
-      err.innerHTML = r.error === "dni" ? `Ya hay una cartilla enviada con ese DNI. Si es la tuya, consultala en <a href="#/mi-cartilla">Mi cartilla</a>.` : "No se pudo enviar. Revisá tu conexión y probá de nuevo.";
+      err.innerHTML = r.error === "dni" ? `Ya hay una cartilla enviada con ese DNI. Si es la tuya, consultala en <a href="#/mi-cartilla">Mi cartilla</a>.`
+        : r.error === "datos" ? "Revisá tus datos: alguno no tiene el formato correcto." : "No se pudo enviar. Revisá tu conexión y probá de nuevo.";
       return;
     }
-    st.enviada = true; st.dniEnviado = dni; go(idx("final"));
+    st.enviada = true; st.dniEnviado = dni; st.miId = r.id; go(idx("final"));
   });
 
   document.addEventListener("keydown", e => { if (ruta() !== "cartilla" || e.target.matches("input")) return; if (e.key === "ArrowRight" && S[st.i].id !== "registro" && st.i < S.length - 1) go(st.i + 1); if (e.key === "ArrowLeft") go(st.i - 1); });
