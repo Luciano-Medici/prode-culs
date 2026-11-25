@@ -238,3 +238,62 @@ h3.sec:first-child{margin-top:4px}
   .view>*{animation:in .3s ease-out both}
   @keyframes in{from{transform:translateY(8px)}to{transform:none}}
 }
+
+/* =========================================================
+   Computadora: pantalla dividida. Foto y título fijos a la
+   izquierda, contenido a la derecha.
+   ========================================================= */
+@media (min-width:700px) and (max-width:999px){
+  .app{max-width:560px}
+}
+@media (min-width:1000px){
+  body{background:var(--blanco)}
+  .app{max-width:none}
+  .view{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-content:start}
+  .view::after{content:"";grid-column:2;height:96px}
+  .view:has(>.cover)::after{display:none}
+  .view>.cover,.view>.rules,.view>.story,.view>.fin{display:contents}
+  .view>*,.view>.cover>*,.view>.rules>*,.view>.story>*,.view>.fin>*{grid-column:2;width:min(100% - 64px,620px);margin-inline:auto;animation:none}
+  .view .hero,.view>.thead{grid-column:1;grid-row:1/span 99;width:100%;margin:0;position:sticky;top:0;align-self:start;height:100svh!important;min-height:0!important}
+  .view:has(>.story),.view:has(>.cover){background:var(--negro);color:var(--blanco)}
+
+  /* títulos más grandes sobre la foto */
+  .view .hero .boxes span{font-size:clamp(46px,4.6vw,76px)!important}
+  .cover .titular{left:clamp(20px,3vw,48px);right:auto;bottom:clamp(140px,19vh,190px);gap:14px}
+  .cover .titular .boxes.b2 span{font-size:clamp(34px,3.4vw,56px)!important}
+  .cover .meta{left:clamp(20px,3vw,48px);right:clamp(20px,3vw,48px);bottom:clamp(20px,4vh,40px)}
+  .cover .marca .logo{width:200px}
+  .view .hero .tags{top:24px;left:clamp(20px,3vw,48px);right:clamp(20px,3vw,48px)}
+  .rules .hero .boxes,.fin .hero .boxes,.shero .boxes{left:clamp(20px,3vw,48px)!important;bottom:clamp(24px,5vh,48px)!important}
+  .jhero .boxes{right:clamp(20px,3vw,48px);bottom:clamp(24px,5vh,48px)}
+  .jhero .num{left:clamp(20px,3vw,48px);bottom:clamp(24px,5vh,48px)}
+  .view>.hero>.boxes{left:clamp(20px,3vw,48px)!important;bottom:clamp(24px,5vh,48px)!important}
+
+  /* portada: el texto y el botón centrados a la derecha */
+  .cover .foot{min-height:100svh;display:flex;flex-direction:column;justify-content:center;gap:22px;padding:48px 0}
+  .cover .foot .just{font-size:13px}
+
+  /* contenido */
+  .jmeta{margin-top:48px}
+  .rules .pad,.fin .pad{padding:48px 0 32px}
+  .match,.jfoot{padding-inline:0}
+  .story .chap{margin-top:48px;padding-inline:0}
+  .story .txt,.mats,.models{padding-inline:0}
+  .story .feat,.quiz{padding:18px}
+  .form{padding:48px 0 32px}
+  .view>.hero[style]{background:var(--gris)!important}
+
+  /* tablas y mi cartilla: el encabezado oscuro pasa a la izquierda */
+  .view>.thead{display:flex;flex-direction:column;justify-content:center;gap:28px;padding:48px clamp(24px,4vw,72px)}
+  .view>.thead .boxes span{font-size:clamp(56px,5.5vw,92px)}
+  .view>.thead .tabs{max-width:420px}
+  .days{padding:48px 0 0}
+  .tinfo{padding-inline:0}
+  .rank{padding-inline:0}
+  .rank .r.me{margin:0 -12px;padding-left:12px;padding-right:12px}
+  .view>.pad{padding:48px 0 32px}
+  .empty-s{padding-top:80px}
+
+  /* barra de navegación solo sobre la mitad derecha */
+  .navbar{position:fixed;left:50%;right:0;bottom:0;padding-inline:max(32px,calc((50vw - 620px) / 2))}
+}
